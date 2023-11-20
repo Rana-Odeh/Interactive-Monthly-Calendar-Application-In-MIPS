@@ -23,7 +23,7 @@ li $v0 ,13
 la $a0 , str
 li $a1 , 0
 syscall
-#Check if opened file was successful
+
 bltz $v0, open_file_error
 
 #read file
@@ -76,10 +76,13 @@ CH1.1:	la $a0,option
 	syscall 
 	sw $v0, C_search
 	
+        
+        j L
 CH1.2:
+
 CH1.3:
-CH1.4:
-j Loop
+
+CH1.4: j Loop
 
 
 CH2:
