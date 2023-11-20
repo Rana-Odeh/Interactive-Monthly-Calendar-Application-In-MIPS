@@ -1,8 +1,11 @@
 .data  
 filename:.asciiz "Enter the file name \n"
-str : .space 10 # value file name 
+str : .space 10 # value file name
+C_search: .space 10
+option: .asciiz "Enter the day"
+error_mssg1: "read File error"
 fileWord:.space 1024
-error_mssg: .asciiz "open File error"
+error_mssg: .asciiz "Open File error"
 main_menu:"\nChoose one of the following options:\n 1.View the calendar.\n 2. View Statistics. \n 3. Add a new appointment.\n 4. Delete an appointment.\n5.exit\n"
 menu1:"\n1. per day.\n2.per set of days.\n3. fora given slot in a given day.\n4.return to main memu"
 .text 
@@ -20,19 +23,16 @@ li $v0 ,13
 la $a0 , str
 li $a1 , 0
 syscall
-move $s0,$v0 # return file discriptor in v0 ->s0
-bnez $s0, open_file_error
+bnez $v0, open_file_error
 #read file
 li $v0 , 14
-move $a0 , $s0 #a0=file discriptor
-
+move $a0 , $v0 #a0=file discriptor
 la $a1 , fileWord 
 la $a2 , 1024
 syscall
-#print file
-li $v0 , 4
-la $a0,fileWord
-syscall
+# Check if read was successful
+bltz $v0, read_error
+
 # different menu options
 li $t1, 1  
 li $t2, 2  
@@ -66,7 +66,13 @@ L:    la $a0 ,menu1
       beq $t4,$t5,CH1.4  # option 4
       j L
 
-CH1.1:
+CH1.1:	la $a0,option
+	li $v0 ,4
+	syscall
+	li $v0 ,5
+	syscall 
+	la $t7,fileWord
+	move $t8,$v0
 CH1.2:
 CH1.3:
 CH1.4:
@@ -80,3 +86,10 @@ open_file_error:	li $v0,4
 			la $a0,error_mssg
 			syscall
 			j main
+			
+read_error:	li $v0,4
+		la $a0,error_mssg1
+		syscall
+		j main
+
+search:
