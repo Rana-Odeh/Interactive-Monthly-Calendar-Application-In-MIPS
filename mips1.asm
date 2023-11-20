@@ -23,7 +23,7 @@ li $v0 ,13
 la $a0 , str
 li $a1 , 0
 syscall
-
+#Check if opened file was successful
 bltz $v0, open_file_error
 
 #read file
