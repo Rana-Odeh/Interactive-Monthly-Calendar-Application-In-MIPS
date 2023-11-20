@@ -2,12 +2,12 @@
 filename:.asciiz "Enter the file name \n"
 str : .space 10 # value file name
 C_search: .space 10
-option: .asciiz "Enter the day"
-error_mssg1: "read File error"
+option: .asciiz "\nEnter the day\n"
+error_mssg1: "\nRead File error\n"
 fileWord:.space 1024
-error_mssg: .asciiz "Open File error"
+error_mssg: .asciiz "\nOpen File error\n"
 main_menu:"\nChoose one of the following options:\n 1.View the calendar.\n 2. View Statistics. \n 3. Add a new appointment.\n 4. Delete an appointment.\n5.exit\n"
-menu1:"\n1. per day.\n2.per set of days.\n3. fora given slot in a given day.\n4.return to main memu"
+menu1:"\n1. per day.\n2.per set of days.\n3. fora given slot in a given day.\n4.return to main memu\n"
 .text 
 .globl main
 main:
@@ -23,13 +23,16 @@ li $v0 ,13
 la $a0 , str
 li $a1 , 0
 syscall
-bnez $v0, open_file_error
+
+bltz $v0, open_file_error
+
 #read file
-li $v0 , 14
 move $a0 , $v0 #a0=file discriptor
 la $a1 , fileWord 
 la $a2 , 1024
+li $v0 , 14
 syscall
+
 # Check if read was successful
 bltz $v0, read_error
 
@@ -71,12 +74,14 @@ CH1.1:	la $a0,option
 	syscall
 	li $v0 ,5
 	syscall 
-	la $t7,fileWord
-	move $t8,$v0
+	sw $v0, C_search
+	
 CH1.2:
 CH1.3:
 CH1.4:
 j Loop
+
+
 CH2:
 CH3:
 CH4:
