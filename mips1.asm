@@ -1,5 +1,6 @@
 .data  
 filename:.asciiz "\nEnter the file name : \n"
+r:.asciiz "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh\n"
 str : .space 10 # value file name
 C_search : .space 10
 option: .asciiz "\nEnter the day :"
@@ -86,20 +87,62 @@ L:    la $a0 ,menu1
                 addi $t0, $t0, 1
         	j find_day
         compare:
-        	la $a0, C_search
-       		la $a1, result_str
-    	compare_loop:
-               lb  $t8, 0($a0)
-               lb  $t9, 0($a1)
-               beq $t8, $t9, continue_compare
-               j not_found
-        continue_compare:
-        	blez $t9, found 
-        	addi $a0, $a0, 1
-        	addi $a1, $a1, 1
-        	j compare_loop
-	found:
-        	la $a0, result_str
+        
+        
+         la $a0, C_search  
+         li $v0,4
+         syscall
+         la $a0, result_str 
+         li $v0,4
+         syscall
+         #----------------------------------------------
+          # Remove newline character
+    la $a0, C_search
+remove_newline:
+    lb $t0, 0($a0)
+    beq $t0, 10, found_newline  # Check for newline character
+    beq $t0, 0, end_remove  # Check for null terminator
+    addi $a0, $a0, 1
+    j remove_newline
+
+found_newline:
+    sb $zero, 0($a0)  # Replace newline character with null terminator
+
+end_remove:
+    
+         #----------------------------------
+          # Convert string to integer
+    la $a0, result_str   # Load address of the string
+    move $t0, $zero  # Initialize result to 0
+parse_digit_loop:
+    lb $t1, 0($a0)   # Load the ASCII value of the current character
+    beq $t1, $zero, end_parse1 # If the character is null (end of string), exit loop
+    sub $t1, $t1, 48
+    # Multiply the current result by 10 and add the new digit
+    mul $t0, $t0, 10
+    add $t0, $t0, $t1
+    addi $a0, $a0, 1  # Move to the next character in the string
+    j parse_digit_loop
+end_parse1:
+    move $t8, $t0
+    
+    
+    la $a0, C_search   # Load address of the strin
+    move $t0, $zero  # Initialize result to 0
+parse_digit_loop2:
+    lb $t1, 0($a0)   # Load the ASCII value of the current character
+    beq $t1, $zero, end_parse  # If the character is null (end of string), exit loop
+    sub $t1, $t1, 48
+    # Multiply the current result by 10 and add the new digit
+    mul $t0, $t0, 10
+    add $t0, $t0, $t1
+    addi $a0, $a0, 1  # Move to the next character in the string
+    j parse_digit_loop2
+end_parse:
+    move $t9, $t0  
+    
+    bne $t8,$t9 , not_found  	
+        	la $a0, r
         	li $v0, 4
         	syscall
 	not_found :
@@ -126,9 +169,3 @@ read_error:	li $v0,4
 		la $a0,error_mssg1
 		syscall
 		j main
-
-
-
-
-
-
