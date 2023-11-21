@@ -1,12 +1,12 @@
 .data  
-filename:.asciiz "Enter the file name \n"
+filename:.asciiz "\nEnter the file name : \n"
 str : .space 10 # value file name
-C_search: .space 5
-option: .asciiz "\nEnter the day\n"
+C_search : .space 10
+option: .asciiz "\nEnter the day :"
 error_mssg1: "\nRead File error\n"
 fileWord:.space 1024
 error_mssg: .asciiz "\nOpen File error\n"
-result_str:.space 10
+result_str :.space 10
 main_menu:"\nChoose one of the following options:\n 1.View the calendar.\n 2. View Statistics. \n 3. Add a new appointment.\n 4. Delete an appointment.\n 5.exit\n"
 menu1:"\nChoose one of the following options:\n 1. per day.\n 2.per set of days.\n 3. fora given slot in a given day.\n 4.return to main memu\n"
 .text 
@@ -72,7 +72,6 @@ L:    la $a0 ,menu1
 	li $v0 ,4
 	syscall
 	la $a0,C_search
-	li $a1,10
 	li $v0 ,8
 	syscall 
 	la $a1,result_str
