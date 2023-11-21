@@ -71,31 +71,47 @@ L:    la $a0 ,menu1
         la $a0,option  #the program will let the user view the calendar per day
 	li $v0 ,4
 	syscall
-	li $v0 ,5
+	la $a0,C_search
+	li $a1,10
+	li $v0 ,8
 	syscall 
-	move $t9 ,$v0
-	sw $v0, C_search
-	la $a0,fileWord
-        la $a1, C_search
+	la $a1,result_str
+        la $a0, fileWord
+        li $t0, 0
 	find_day:
-	 	lb $t2, 0($a0)
-	 	lb $t0, 0($a1)
+	 	lb $t4, 0($a0)
 	 	li $t3, 58 # ASCII value for ":"
-        	beqz $t0, ch
-                beq $t2, $t3, not_found
-        	bne $t0, $t2, not_found
-               addi $a1, $a1, 1
-               addi $a0, $a0, 1
+                beq $t4, $t3, compare
+                sb $t4, 0($a1)
+                addi $a1, $a1, 1
+                addi $a0, $a0, 1
+                addi $t0, $t0, 1
         	j find_day
-        ch:
-        	beq $t2, $t3, found
+        compare:
+       		la $a0, result_str
+        	li $v0, 4
+        	syscall
+        	la $a0, C_search
+        	li $v0, 4
+        	syscall
         	
+        	la $a0, C_search
+       		la $a1, result_str
+    	compare_loop:
+               lb  $t1, 0($a0)
+               lb  $t2, 0($a1)
+               beq $t1, $t2, continue_compare
+               j not_found
+        continue_compare:
+        	blez $t1, found 
+        	addi $a0, $a0, 1
+        	addi $a1, $a1, 1
+        	j compare_loop
 	found:
-        	# print full line 
-        	j CH1.1
-        	
+        	la $a0, result_str
+        	li $v0, 4
+        	syscall
 	not_found :
-      		# read another  line from file
       		j main
 	j L
     CH1.2:
@@ -103,7 +119,6 @@ L:    la $a0 ,menu1
     CH1.3:
 
     CH1.4: j Loop
-
 view_statistics:
 add_appointment:
 delete_appointment:
@@ -120,5 +135,7 @@ read_error:	li $v0,4
 		la $a0,error_mssg1
 		syscall
 		j main
+
+
 
 
