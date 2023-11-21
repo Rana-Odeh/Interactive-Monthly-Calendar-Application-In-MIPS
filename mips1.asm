@@ -1,7 +1,7 @@
 .data  
 filename:.asciiz "Enter the file name \n"
 str : .space 10 # value file name
-C_search: .space 10
+C_search: .space 5
 option: .asciiz "\nEnter the day\n"
 error_mssg1: "\nRead File error\n"
 fileWord:.space 1024
@@ -77,7 +77,6 @@ L:    la $a0 ,menu1
 	syscall 
 	la $a1,result_str
         la $a0, fileWord
-        li $t0, 0
 	find_day:
 	 	lb $t4, 0($a0)
 	 	li $t3, 58 # ASCII value for ":"
@@ -88,22 +87,15 @@ L:    la $a0 ,menu1
                 addi $t0, $t0, 1
         	j find_day
         compare:
-       		la $a0, result_str
-        	li $v0, 4
-        	syscall
-        	la $a0, C_search
-        	li $v0, 4
-        	syscall
-        	
         	la $a0, C_search
        		la $a1, result_str
     	compare_loop:
-               lb  $t1, 0($a0)
-               lb  $t2, 0($a1)
-               beq $t1, $t2, continue_compare
+               lb  $t8, 0($a0)
+               lb  $t9, 0($a1)
+               beq $t8, $t9, continue_compare
                j not_found
         continue_compare:
-        	blez $t1, found 
+        	blez $t9, found 
         	addi $a0, $a0, 1
         	addi $a1, $a1, 1
         	j compare_loop
@@ -135,6 +127,8 @@ read_error:	li $v0,4
 		la $a0,error_mssg1
 		syscall
 		j main
+
+
 
 
 
