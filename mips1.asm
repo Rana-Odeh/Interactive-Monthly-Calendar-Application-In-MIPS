@@ -1,4 +1,5 @@
 .data  
+num_day:.asciiz "Enter the number of day  \n"
 filename:.asciiz "Enter the file name \n"
 str : .space 10 # value file name
 C_search: .space 10
@@ -44,7 +45,7 @@ Loop:
        beq $t6, $t0, exit_program
        j Loop  
 view_calendar: 
-	li $t1, 1  
+       li $t1, 1  
        li $t2, 2  
        li $t3, 3  
        li $t4, 4
@@ -59,7 +60,6 @@ view_calendar:
       beq $t3,$t5,CH1.3  # option 3
       beq $t4,$t5,CH1.4  # option 4
       j view_calendar
-
     CH1.1:	#the program will let the user view the calendar per day
         la $a0,option  
 	li $v0 ,4
@@ -82,7 +82,6 @@ view_calendar:
 	la $a2 , 1024
 	li $v0, 14
 	syscall
-	beq $v0,0, end_file # no data 
         la $a2 , result
 	la $a0,C_search
    	la $a1, fileWord
@@ -112,6 +111,8 @@ view_calendar:
 	 	la $a0,result
 	       li $v0 ,4
 	       syscall
+	       subi $t8,$t8,1
+	       bgtz $t8,m 
 	       j view_calendar
         not_foundInThisLine:
         	addi $a1, $a1, 1
@@ -122,14 +123,28 @@ view_calendar:
    	f :
    	  la $a0,C_search
    	  addi $a1, $a1, 1
+   	  la $a2 , result
    	  j find_day	
        k:
    	 la $a0,end
   	 li $v0,4
   	 syscall
+  	 subi $t8,$t8,1
+  	 bgtz $t8,m 
   	 j view_calendar
+  	 
+  	 #-----------------------------------------
     CH1.2:
-
+	la $a0,num_day  
+	li $v0 ,4
+	syscall
+	li $v0 ,5
+	syscall 
+	move $t8,$v0
+    m:
+        blez $t8,view_calendar
+        j CH1.1
+	
     CH1.3:
 
     CH1.4: j Loop
@@ -150,4 +165,3 @@ end_file:
     li      $v0, 16          # System call for close file
     move    $a0, $s0         # File descriptor
     syscall
-   
