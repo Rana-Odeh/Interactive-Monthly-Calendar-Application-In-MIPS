@@ -1,15 +1,15 @@
 .data  
 num_day:.asciiz "Enter the number of day  \n"
 filename:.asciiz "Enter the file name \n"
-str : .space 10 # value file name
-C_search: .space 10
-option: .asciiz "\nEnter the day\n"
-fileWord:.space 1024
-result:.space 100
 end:.asciiz "There are no appointments on this day\n"
 error_mssg: .asciiz "\nOpen File error\n"
+option: .asciiz "\nEnter the day\n"
 main_menu:"\nChoose one of the following options:\n 1.View the calendar.\n 2. View Statistics. \n 3. Add a new appointment.\n 4. Delete an appointment.\n 5.exit\n"
 menu1:"\nChoose one of the following options:\n 1. per day.\n 2.per set of days.\n 3. fora given slot in a given day.\n 4.return to main memu\n"
+str : .space 10 # value file name
+C_search: .space 10
+fileWord:.space 1024
+result:.space 100
 .text 
 .globl main
 main:
