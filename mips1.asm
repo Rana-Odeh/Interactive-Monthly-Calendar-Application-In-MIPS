@@ -108,12 +108,12 @@ view_calendar:
 	 	addi $a2, $a2, 1
 	 	j found 
 	 f_print:
-	 	la $a0,result
-	       li $v0 ,4
-	       syscall
-	       subi $t8,$t8,1
-	       bgtz $t8,m 
-	       j view_calendar
+	      la $a0,result
+	      li $v0 ,4
+	      syscall
+	      subi $t8,$t8,1
+	      bgtz $t8,m 
+	      j view_calendar
         not_foundInThisLine:
         	addi $a1, $a1, 1
    		lb  $t1, 0($a1)
@@ -123,8 +123,16 @@ view_calendar:
    	f :
    	  la $a0,C_search
    	  addi $a1, $a1, 1
-   	  la $a2 , result
-   	  j find_day	
+   	 y:
+           li $t9, 0
+           sb $t9,0($a2)
+	   addi $a2, $a2, 1
+	   j t
+        t:
+           lb $t7,0($a2)
+           bnez $t7,y
+   	   la $a2 , result
+   	j find_day	
        k:
    	 la $a0,end
   	 li $v0,4
