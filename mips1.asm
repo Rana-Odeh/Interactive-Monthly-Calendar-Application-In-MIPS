@@ -6,17 +6,17 @@ error_mssg: .asciiz "\nOpen File error\n"
 option: .asciiz "\nEnter the day\n"
 main_menu:"\nChoose one of the following options:\n 1.View the calendar.\n 2. View Statistics. \n 3. Add a new appointment.\n 4. Delete an appointment.\n 5.exit\n"
 menu1:"\nChoose one of the following options:\n 1. per day.\n 2.per set of days.\n 3. fora given slot in a given day.\n 4.return to main memu\n"
-str : .space 10 # value file name
-C_search: .space 10
-fileWord:.space 1024
-result:.space 100
+str : .space 10 # file name
+C_search: .space 10 
+fileWord:.space 1024 # value from file
+result:.space 100 
 .text 
 .globl main
 main:
-la $a0 , filename
+la $a0 , filename 
 li $v0 , 4
 syscall
-la $a0 ,str # a0=address of str
+la $a0 ,str # a0=address to save value of file name
 li $a1 , 10 # a1=max length
 li $v0 , 8 # read str
 syscall
@@ -24,7 +24,7 @@ syscall
 li $a1 , 0
 li $v0 ,13
 syscall
-bltz $v0, open_file_error
+bltz $v0, open_file_error # Verify that the file is open
 move $s0, $v0
 Loop:  
        li $t1, 1  
@@ -140,9 +140,8 @@ view_calendar:
   	 subi $t8,$t8,1
   	 bgtz $t8,m 
   	 j view_calendar
-  	 
-  	 #-----------------------------------------
-    CH1.2:
+ 
+    CH1.2: #the program will let the user view the calendar per set of day
 	la $a0,num_day  
 	li $v0 ,4
 	syscall
@@ -153,9 +152,10 @@ view_calendar:
         blez $t8,view_calendar
         j CH1.1
 	
-    CH1.3:
+    CH1.3:  #the program will let the user view the calendar slot in a given day
+	    
 
-    CH1.4: j Loop
+    CH1.4: j Loop   #Return to main menu
 
 view_statistics:
 add_appointment:
