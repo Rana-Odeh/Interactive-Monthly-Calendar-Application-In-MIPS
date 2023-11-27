@@ -410,7 +410,8 @@ view_statistics:
      	 beq $t1,10,ch2.3
      	 j complete
      	 
- end_sum:la $a0,num_L
+ end_sum:subi $t3,$t3,1
+         la $a0,num_L
          li $v0,4
          syscall
          move $a0,$t6
