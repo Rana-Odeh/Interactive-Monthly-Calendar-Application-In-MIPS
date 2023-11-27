@@ -434,15 +434,23 @@ view_statistics:
          la $a0,Average
          li $v0,4
          syscall
-         div $v0,$t6,$t3
-         li $v0,1
+         mtc1 $t6, $f0
+         mtc1 $t3, $f1
+         cvt.s.w $f0, $f0
+         cvt.s.w $f1, $f1
+         div.s $f12,$f0,$f1
+         li $v0,2
          syscall
          #--------------
          la $a0,ratio
          li $v0,4
          syscall
-         div $v0,$t6,$t5
-         li $v0,1
+         mtc1 $t6, $f0
+         mtc1 $t5, $f1
+         cvt.s.w $f0, $f0
+         cvt.s.w $f1, $f1
+         div.s $f12,$f0,$f1
+         li $v0,2
          syscall
          #--------------
          j Loop
