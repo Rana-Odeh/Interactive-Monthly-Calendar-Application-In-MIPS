@@ -13,7 +13,6 @@ num_OH: .asciiz "\n Number of OH (in hours): "
 num_M: .asciiz "\n Number of Meetings (in hours): "
 Average: .asciiz "\n Average lectures per day :"
 ratio: .asciiz "\n Ratio between number of lectures and number of OH : "
-type: .asciiz "\nEnter the type:"
 S_num :.word 0
 F_num:.word 0
 time1:.space 5
@@ -25,8 +24,6 @@ str : .space 10 # file name
 C_search: .space 10 
 fileWord:.space 1024 # value from file
 result:.space 100 
-add_appointment2: .space 1024
-Type: .space 3
 .text 
 .globl main
 main:
@@ -97,10 +94,8 @@ view_calendar:
    	la $a1, fileWord
         find_day:
         	li $t3, 58 # ASCII value for ":"
-		lb  $t0, 0($a0)
-		lb  $t1, 0($a1)
-		beq $t7,3,c3
-	        cont:
+		lb   $t0, 0($a0)
+		lb   $t1, 0($a1)
     		bne  $t3, $t1, next
 		bnez $t0,next
 		j found 
@@ -111,8 +106,7 @@ view_calendar:
    		addi $a0, $a0, 1       
    		addi $a1, $a1, 1       
    		j find_day
-        found:   
-                beq $t7 ,3,add_appointment1
+        found:
    		addi $a1, $a1, 1
    		beq $t6,3, ch3.1
    		lb  $t1, 0($a1)
@@ -129,7 +123,6 @@ view_calendar:
 	      bgtz $t8,m 
 	      j view_calendar
         not_foundInThisLine:
-                beq $t7 ,3,c3.1
         	addi $a1, $a1, 1
    		lb  $t1, 0($a1)
    		beq $t1, 10, f
@@ -190,7 +183,6 @@ view_calendar:
         move $t0,$v0
         jal Convert_24
         sw  $t0 , F_num
-        beq $t7 ,3 ,add_Type
         la $a0,Final_slots
       ch3.2:
         la $a3,time1
@@ -253,13 +245,14 @@ view_calendar:
          la $a0,time1
          la $a1,T1
          jal str_to_int
-         lw $t0,T1
+         sw   $t0, 0($a1)         
          jal Convert_24
          sw $t0,T1
          #---------------
          la $a0,time2
          la $a1,T2
          jal str_to_int
+         sw   $t0, 0($a1) 
          lw $t0,T2
          jal Convert_24
          sw $t0,T2
@@ -466,70 +459,12 @@ view_statistics:
          #--------------
          j Loop
 #---------------------------------------------------------
-add_appointment:la $t7,3
-                la $a3,add_appointment2
-                la $a0,option  
-		li $v0 ,4
-		syscall
-		la $a0,C_search
-		li $a1,10
-		li $v0 ,8
-		syscall 
-       		jal remove_newline
-   		la $a1, fileWord
-   		j ch3.1
-   		add_Type:
-   		la $a0 ,type
-     	        li $v0 , 4
-     	        syscall
-     	        la $a0 ,Type
-   	        li $v0 ,8
-   	        syscall 
-   	        la $a0,C_search 
-		j find_day
-            c3:
-               sb $t1,0($a3)
-               j cont
-            c3.1: 
-        	addi $a1, $a1, 1
-   		lb  $t1, 0($a1)
-   		sb $t1 ,0($a3)
-   		beq $t1, 10, c3.2
-	 	beq $t1,0,add_newLine
-   		j c3.1
-   		
-   	   c3.2:
-   	        la $a0,C_search
-   	        addi $a1, $a1, 1
-   	         j find_day
-   	   
-   	  add_appointment1:
-   	                 move $s4,$a1 
-   	                 j Loop
-   	         
-   	  add_newLine:
-   	              la $a0,C_search
-   	              la $t1,10
-   	              sb $t1 ,0($a3)
-   	              addi $a3, $a3, 1
-   	              cont_add:
-   	              lb  $t0, 0($a0)
-   		      sb $t0 ,0($a3)
-   	              addi $a3, $a3, 1
-   	              beqz $t0,con_add_slot
-   	              j cont_add
-   	              con_add_slot:
-   	              j Loop
-   	              #add_slot
-   	              
-   	        
-                 
+add_appointment:
 #---------------------------------------------------------
 delete_appointment:
 #---------------------------------------------------------
 exit_program : li $v0, 10    # Exit program
                syscall
-           
 #---------------------------------------------------------
 open_file_error: li $v0,4
 		 la $a0,error_mssg
