@@ -21,6 +21,8 @@ nothing: .asciiz "Nothing OH"
 not_Range:.asciiz "This hours not in range , Re_enter the values \n"
 errorSlot: .asciiz "The slot is not valid as it shares the same starting and ending positions. Please input a valid slot. \n"
 add_succes:.asciiz " The appointment has been added successfully \n"
+delet_succes:.asciiz " The appointment has been deleted successfully \n"
+no_delet:.asciiz " This appointment does not exist \n"
 slash_N: .asciiz "\n"
 S_num :.word 0
 F_num:.word 0
@@ -987,7 +989,10 @@ comp_time:
            blt $t1,$t0, not_delet  # Branch to not_delet if T1 < S_num
            bgt $t1,$t3, not_delet  # Branch to not_delet if T1 > F_num
            blt $t2,$t0, not_delet  # Branch to not_delet if T2 < S_num
-           bgt $t2,$t3, not_delet  # Branch to not_delet if T2 > F_num 
+           bgt $t2,$t3, not_delet  # Branch to not_delet if T2 > F_num
+           la $a0,delet_succes 
+    	   li $v0 ,4
+    	   syscall 
            li $t9,8         
     move $ra,$s0        # Move $s0 back to $ra
     jr  $ra             # Jump to the return address with delete this slot
@@ -1044,9 +1049,12 @@ comp_time:
     syscall                   # Invoke the system call
 
     la $a0, add_appointment2 # Load the address of add_appointment2 into $a0
-    jal Clean_MEM             # Call the Clean_MEM function to zero out memory
-
-    j Loop
+    jal Clean_MEM # Call the Clean_MEM function to zero out memory
+    beq $t9,8,finish          
+    la $a0,no_delet 
+    li $v0 ,4
+    syscall 
+    finish:j Loop
 #---------------------------------------------------------
 exit_program :li $v0, 10    # Exit program
               syscall
@@ -1126,3 +1134,4 @@ continue_loop:
 return:
     jr   $ra
 #---------------------------------------------------------
+
