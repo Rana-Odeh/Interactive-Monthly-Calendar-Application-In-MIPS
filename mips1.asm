@@ -1,3 +1,5 @@
+# 1201910_Hidaya_Mustafa
+# 1201750_Rana_Odeh
 .data  
 num_day:.asciiz "---> Enter the number of day : "
 filename:.asciiz "** Enter the file name :  "
@@ -32,7 +34,7 @@ time2:.space 5
 T1:.word 0
 T2:.word 0
 Final_slots:.space 50
-str : .space 10 # file name
+str : .space 20 # file name
 C_search: .space 10 
 fileWord:.space 1024 # value from file
 result:.space 100 
@@ -50,10 +52,10 @@ syscall
 
 # Get user input for the filename
 la $a0, str            # a0 = address to save the value of the file name
-li $a1, 10             # a1 = max length
+li $a1, 20           # a1 = max length
 li $v0, 8              # read str
 syscall
-
+jal remove_newline
 # Main loop
 Loop:
     # Menu options
@@ -1134,4 +1136,5 @@ continue_loop:
 return:
     jr   $ra
 #---------------------------------------------------------
+
 
