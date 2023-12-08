@@ -20,6 +20,7 @@ No_day: .asciiz "There are no days in the file \n"
 nothing: .asciiz "Nothing OH"
 not_Range:.asciiz "This hours not in range , Re_enter the values \n"
 errorSlot: .asciiz "The slot is not valid as it shares the same starting and ending positions. Please input a valid slot. \n"
+add_succes:.asciiz " The appointment has been added successfully \n"
 slash_N: .asciiz "\n"
 S_num :.word 0
 F_num:.word 0
@@ -662,6 +663,9 @@ add_appointment12:
      Check_Line:lb $t0 ,0($a0)
                 li $t9,5
 		bnez $t0,printConflict
+		la $a0,add_succes 
+    	        li $v0 ,4
+    	        syscall 
     ADD_LINE1:la $a0,time
               jal Clean_MEM
               la $a0,time
@@ -729,7 +733,12 @@ printConflict:la $a0,Conflict
    	        addi $a0, $a0, 1
    	        j cont_day
 # con_add_slot label, add : character to a3
-      con_add_slot:li $t1,58
+   con_add_slot:move $s6,$a0
+                la $a0,add_succes 
+    	        li $v0 ,4
+    	        syscall
+    	        move $a0,$s6
+                li $t1,58
    	        sb $t1 ,0($a3)
    	        addi $a3, $a3, 1
  # add_app label, add space character to a3 and convert and add S_num and F_num to a3
@@ -777,20 +786,20 @@ printConflict:la $a0,Conflict
    	        addi $a0, $a0, 1
    	        j TYPE
  # AddNewLine label, clean memory and add newline characters
-    AddNewLine:la $a0,time1
-               jal Clean_MEM
-               la $a0,time2
-               jal Clean_MEM
-               la $a0,S_num
+   AddNewLine:la $a0,time1
+              jal Clean_MEM
+              la $a0,time2
+              jal Clean_MEM
+              la $a0,S_num
               jal Clean_MEM
               la $a0,F_num
               jal Clean_MEM
-               bne $t9,5, Write_File
-               la $a0,buffer
-               lb $t1,0($a0)
-               beqz $t1,cc
-   	       li $t1,44
-   	       sb $t1 ,0($a3)
+              bne $t9,5, Write_File
+              la $a0,buffer
+              lb $t1,0($a0)
+              beqz $t1,cc
+   	      li $t1,44
+   	      sb $t1 ,0($a3)
               addi $a3, $a3, 1
               li $t1,32
               sb $t1 ,0($a3) 
@@ -820,6 +829,7 @@ printConflict:la $a0,Conflict
              sb $t1 ,0($a3) 
              addi $a3, $a3, 1
              j c3.1
+              
 
  # Write_File label, write the content of add_appointment2 to a file             
  Write_File:
