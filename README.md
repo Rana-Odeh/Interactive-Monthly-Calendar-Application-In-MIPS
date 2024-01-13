@@ -1,5 +1,5 @@
 # Computer Architecture 
-**Project – Interactive Monthly Calendar Application In MIPS **
+**Project – Interactive Monthly Calendar Application In MIPS**
 
 **Objective:**
 The objective of this assignment is to write a MIPS code for viewing, editing, and managing appointments
