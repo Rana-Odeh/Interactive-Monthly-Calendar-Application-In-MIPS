@@ -14,7 +14,9 @@ The calendar will be stored in text file with the following format:
 4. There are three types of an appointments: Lectures (L), Office Hours (OH), Meetings (M)
 5. To reserve a slot, provide the start and the end time with the type of appointments separated by a comma.
 For example, the following line have the following appointments:
-                  11: 8-9 L, 10-12 OH, 12-2 M
+
+    11: 8-9 L, 10-12 OH, 12-2 M
+   
 From 8 to 9 there is a lecture, from 10 to 12 reserved for an office hour, and from 12-2 for meeting.
 The other slots are free.
 
