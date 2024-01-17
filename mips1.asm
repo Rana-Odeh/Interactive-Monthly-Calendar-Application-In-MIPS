@@ -42,6 +42,7 @@ add_appointment2: .space 1024
 Type: .space 3
 buffer: .space 100
 TY: .space 3
+
 .text 
 .globl main
 main:
@@ -56,6 +57,7 @@ li $a1, 20           # a1 = max length
 li $v0, 8              # read str
 syscall
 jal remove_newline
+
 # Main loop
 Loop:
     # Menu options
@@ -84,6 +86,7 @@ Loop:
 
     j Loop
 #---------------------------------------------------------
+
 # view_calendar subroutine
 view_calendar:
     # Menu options
@@ -117,18 +120,22 @@ view_calendar:
     j view_calendar
 
 #---------------------------------------------------------
+
 # view the calendar per day
 CH1.1: #Open a file to read the calendar data
 la $a0, str
 li $a1, 0
 li $v0, 13           # Open file syscall
 syscall
+
 bltz $v0, open_file_error  # Verify that the file is open
+
 move $a0, $v0
 la $a1, fileWord
 li $a2, 1024
 li $v0, 14           # Read file syscall
 syscall
+
 li $v0, 16           # Close file syscall
 syscall
 
@@ -136,6 +143,7 @@ CH.1: #Get user input for search and handle user options
 la $a0, option
 li $v0, 4
 syscall
+
 la $a0, C_search
 li $a1, 10
 li $v0, 8
@@ -222,6 +230,7 @@ END_File:
     j view_calendar
 
 #---------------------------------------------------------
+
 # The program will let the user view the calendar per set of days
 CH1.2:
     la $a0, num_day     # Prompt user for the number of days to view
@@ -231,6 +240,7 @@ CH1.2:
     syscall
     
     move $t8, $v0  # Store the number of days in $t8
+    
 Print_DAYS:
     blez $t8, view_calendar      # Check if the number of days is less than or equal to zero
     # Print a newline character
@@ -1057,6 +1067,7 @@ comp_time:
     li $v0 ,4
     syscall 
     finish:j Loop
+    
 #---------------------------------------------------------
 exit_program :li $v0, 10    # Exit program
               syscall
@@ -1075,7 +1086,6 @@ open_file_error:   # Handles an error condition related to opening a file.
     li $v0, 4             
     la $a0, error_mssg   # Load the address of the error message into $a0
     syscall               
-
     j main                # Jump to the main part of the program
 #---------------------------------------------------------
 remove_newline:    #This function Removes newline characters from a null-terminated string.
@@ -1100,7 +1110,8 @@ Convert_12:    #This function Convert hours to type 12
     subi $t0, $t0, 12  
 r1:
     jr $ra             # Jump to the return address
-#---------------------------------------------------------	
+#---------------------------------------------------------
+	
 str_to_int:  #This function Convert ASCII to integer 
     li   $t0, 0               # Initialize result to 0
     li   $t1, 10              # Set divisor to 10
@@ -1116,6 +1127,7 @@ convert_loop:
 done:
     jr   $ra
 #---------------------------------------------------------
+
 int_to_str:      # This function Convert the digit to ASCII and store 
     li $t1, 10     # Divisor for dividing the integer by 10
 convert_loop1:
